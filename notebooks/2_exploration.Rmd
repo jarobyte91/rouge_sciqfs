@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup}
+library(tidyverse)
+library(tidytext)
+knitr::opts_chunk$set(paged.print=FALSE)
+```
+
+```{r}
+papers <- read_tsv("../data/tidy/papers.tsv")
+head(papers)
+```
+
+```{r}
+papers <- papers %>% 
+    mutate(title_len = map_int(str_split(papers$title, " "), length),
+           abstract_len = map_int(str_split(papers$abstract, " "), length),
+           text_len = map_int(str_split(papers$text, " "), length))
+```
+
+```{r}
+select(papers, title_len, abstract_len, text_len) %>% summary()
+```
+
+```{r}
+filter(papers, title_len < 3)
+```
+
+```{r}
+filter(papers, title_len > 30)$title
+```
+
+```{r}
+filter(papers, abstract_len < 10)
+```
+
+
+```{r}
+filter(papers, abstract_len > 1000)$abstract
+```
+

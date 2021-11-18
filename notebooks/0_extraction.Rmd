@@ -1,0 +1,49 @@
+---
+title: "Extraction"
+output: 
+  html_document:
+    df_print: kable
+    paged.print: false
+---
+
+```{r setup}
+library(tidyverse)
+library(knitr)
+```
+
+```{r}
+path <- readr::read_lines("../data/raw/pdf.txt")
+head(path)
+```
+
+```{r}
+name <- str_extract(path, "([^/]+)$") %>% str_sub(end=-5)
+head(name)
+```
+```{r}
+pdf <- tibble(title = name, path)
+pdf
+```
+
+```{r}
+count(pdf, title)
+```
+
+
+```{r}
+pdf_unique <- pdf %>% 
+  group_by(title) %>% 
+  nest() %>% 
+  mutate(first = map(data, function(x) head(x, n = 1))) %>% 
+  select(-data) %>% 
+  unnest()
+pdf_unique
+```
+
+```{r}
+pdf_unique$path %>% write_lines("../data/raw/unique_pdf.txt")
+```
+
+```{r}
+pdf_unique$path %>% head() %>% write_lines("../data/raw/sample.txt")
+```

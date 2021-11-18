@@ -1,0 +1,193 @@
+---
+title: "Cleaning"
+output: html_notebook
+---
+
+```{r setup}
+library(tidyverse)
+library(jsonlite)
+knitr::opts_chunk$set(paged.print=FALSE)
+```
+
+```{r}
+json <- read_lines("../data/raw/science_parse_output.json")
+json[1]
+```
+
+```{r}
+dfs <- map(json, fromJSON)
+length(dfs)
+str(dfs[1])
+```
+
+```{r}
+full <- tibble(dfs) %>% 
+    mutate(metadata = map(dfs, "metadata")) %>% 
+    mutate(title = map_chr(metadata, "title", .default = NA),
+           abstract = map_chr(metadata, "abstractText", .default = NA),
+           sections = map(metadata, "sections"),
+           references = map(metadata, "references"),
+           citations = map(metadata, "referenceMentions")) %>%
+    select(-dfs) %>%
+    mutate(text = map_chr(sections, function(x) str_c(x[["text"]], collapse = " ")),
+           references_titles = map(references, "title", .default = NA)) %>% 
+    # drop_na("title", "abstract", "text") %>% 
+    mutate(paper_id = row_number())
+dim(full)
+head(full)
+```
+
+```{r}
+dfs[!complete.cases(select(full, title, abstract, text))] %>% map_chr("name")
+```
+
+
+```{r}
+x = full[2, "references_titles"][[1]]
+x
+```
+
+
+```{r}
+papers <- select(full, paper_id, title, abstract, text)
+dim(papers)
+head(papers)
+```
+
+
+```{r}
+final_papers <- papers %>% 
+    drop_na()
+dim(final_papers)
+head(final_papers, 10)
+```
+
+
+```{r}
+citations <- select(full, paper_id, citations) %>% 
+    unnest(citations) %>% 
+    rename(local_reference_id = referenceID) %>% 
+    mutate(local_reference_id = local_reference_id + 1)
+dim(citations)
+head(citations)
+```
+
+
+```{r}
+clean_title = "[^a-zA-Z]"
+
+references <- select(full, paper_id, references_titles) %>% 
+    rename(titles = references_titles) %>% 
+    mutate(titles = map(titles, as.tibble)) %>% 
+    mutate(titles = map(titles, function(x) mutate(x, local_reference_id = row_number()))) %>% 
+    unnest(titles) %>% 
+    rename(title = value) %>% 
+    select(paper_id, local_reference_id, title) %>% 
+    mutate(title_join = str_replace_all(str_to_lower(title), clean_title, ""))
+dim(references)
+head(references)
+```
+
+```{r}
+unique_references <- select(references, title_join, title) %>% 
+    group_by(title_join) %>% 
+    nest() %>% 
+    mutate(size = map_int(data, nrow)) %>% 
+    arrange(-size) %>% 
+    mutate(title = map_chr(data, function(x) head(x$title, 1))) %>% 
+    select(-data, -size) %>% 
+    ungroup() %>% 
+    drop_na() %>% 
+    mutate(global_reference_id = row_number())
+dim(unique_references)
+head(unique_references, 20)
+```
+
+```{r}
+abstracts <- select(papers, title, abstract) %>% 
+    mutate(title_join = str_replace_all(str_to_lower(title), clean_title, "")) %>% 
+    group_by(title_join) %>% 
+    nest() %>% 
+    mutate(abstract = map_chr(data, ~.x$abstract[1])) %>% 
+    select(-data) %>% 
+    ungroup() %>% 
+    drop_na() 
+dim(abstracts)
+head(abstracts)
+```
+
+
+```{r}
+full_references <- left_join(unique_references, abstracts)
+dim(full_references)
+head(full_references, 10)
+```
+
+```{r}
+final_references <- select(full_references, global_reference_id, title, abstract)
+dim(final_references)
+head(final_references)
+```
+
+```{r}
+count(final_references, is.na(abstract))
+```
+
+```{r}
+full_citations <- left_join(citations, select(references, -title)) %>% 
+    inner_join(full_references)
+dim(full_citations)
+head(full_citations)
+```
+
+```{r}
+final_citations <- select(full_citations, paper_id, local_reference_id, 
+                         global_reference_id, context, startOffset, endOffset)
+dim(final_citations)
+head(final_citations)
+```
+
+
+```{r}
+write_tsv(final_papers, "../data/tidy/papers.tsv")
+write_tsv(final_references, "../data/tidy/references.tsv")
+write_tsv(final_citations, "../data/tidy/citations.tsv")
+```
+
+```{r}
+read_tsv("../data/tidy/papers.tsv") %>% head(10)
+```
+
+```{r}
+read_tsv("../data/tidy/references.tsv") %>% head(20)
+```
+
+```{r}
+read_tsv("../data/tidy/citations.tsv") %>% head(20)
+```
+
+```{r}
+x = dfs[3][[1]][["metadata"]][["references"]][["title"]][[2]]
+title_join_1 = str_replace_all(str_to_lower(x), clean_title, "")
+title_join_1
+x = final_references$title[2]
+title_join_2 = str_replace_all(str_to_lower(x), clean_title, "")
+title_join_2
+title_join_1 == title_join_2
+```
+
+```{r}
+final_citations$context[13]
+```
+
+```{r}
+final_references$title[4]
+```
+
+```{r}
+final_papers$title %>% head()
+```
+
+```{r}
+filter(final_citations, global_reference_id == 19)$context %>% head(50)
+```
