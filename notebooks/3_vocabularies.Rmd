@@ -1,0 +1,82 @@
+---
+title: "Exploration"
+output: html_notebook
+---
+
+```{r setup}
+library(tidyverse)
+knitr::opts_chunk$set(paged.print=FALSE)
+library(tidytext)
+```
+
+
+```{r}
+papers <- read_tsv("../data/tidy/papers.tsv")
+dim(papers)
+head(papers)
+```
+
+# Unigram vocabularies
+
+```{r}
+titles_uni <- unnest_tokens(select(papers, title), word, title) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(word, sort = T)
+head(titles_uni, 10)
+```
+
+```{r}
+abstract_uni <- unnest_tokens(select(papers, abstract), word, abstract) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(word, sort = T)
+head(abstract_uni, 10)
+```
+
+```{r}
+text_uni <- unnest_tokens(select(papers, text), word, text) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(word, sort = T)
+head(text_uni, 20)
+```
+
+# Bigram vocabularies
+
+```{r}
+titles_bi <- unnest_tokens(select(papers, title), bigram, title, 
+                                     token = "ngrams", n = 2) %>% 
+    count(bigram, sort = T)
+head(titles_bi, 20)
+```
+
+```{r}
+abstract_bi <- unnest_tokens(select(papers, abstract), bigram, abstract, 
+                                     token = "ngrams", n = 2) %>% 
+    count(bigram, sort = T)
+head(abstract_bi, 20)
+```
+
+
+```{r}
+abstract_bi %>% 
+    separate(bigram, c("word1", "word2"), sep = " ") %>% 
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word2 %in% stop_words$word) %>% 
+    head(20)
+```
+
+
+
+```{r}
+text_bi <- unnest_tokens(select(papers, text), bigram, text, 
+                                     token = "ngrams", n = 2) %>% 
+    count(bigram, sort = T)
+head(text_bi, 20)
+```
+
+```{r}
+text_bi %>% 
+    separate(bigram, c("word1", "word2"), sep = " ") %>% 
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word2 %in% stop_words$word) %>% 
+    head(20)
+```
