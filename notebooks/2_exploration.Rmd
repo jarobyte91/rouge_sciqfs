@@ -15,6 +15,17 @@ head(papers)
 ```
 
 ```{r}
+references <- read_tsv("../data/tidy/references.tsv")
+dim(references)
+head(references)
+```
+
+```{r}
+citations <- read_tsv("../data/tidy/citations.tsv")
+head(citations)
+```
+
+```{r}
 papers <- papers %>% 
     mutate(title_len = map_int(str_split(papers$title, " "), length),
            abstract_len = map_int(str_split(papers$abstract, " "), length),

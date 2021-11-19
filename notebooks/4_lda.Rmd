@@ -10,77 +10,13 @@ library(tidytext)
 library(topicmodels)
 ```
 
-
 ```{r}
 papers <- read_tsv("../data/tidy/papers.tsv")
-dim(papers)
-head(papers)
 ```
 
-# Unigram vocabularies
 
-```{r}
-titles_uni <- unnest_tokens(select(papers, title), word, title) %>% 
-    anti_join(get_stopwords()) %>% 
-    count(word, sort = T)
-head(titles_uni, 10)
-```
+# Abstract
 
-```{r}
-abstract_uni <- unnest_tokens(select(papers, abstract), word, abstract) %>% 
-    anti_join(get_stopwords()) %>% 
-    count(word, sort = T)
-head(abstract_uni, 10)
-```
-
-```{r}
-text_uni <- unnest_tokens(select(papers, text), word, text) %>% 
-    anti_join(get_stopwords()) %>% 
-    count(word, sort = T)
-head(text_uni, 10)
-```
-
-# Bigram vocabularies
-
-```{r}
-titles_bi <- unnest_tokens(select(papers, title), bigram, title, 
-                                     token = "ngrams", n = 2) %>% 
-    count(bigram, sort = T)
-head(titles_bi, 20)
-```
-
-```{r}
-abstract_bi <- unnest_tokens(select(papers, abstract), bigram, abstract, 
-                                     token = "ngrams", n = 2) %>% 
-    count(bigram, sort = T)
-head(abstract_bi, 20)
-```
-
-```{r}
-# text_bi <- unnest_tokens(select(papers, text), bigram, text, 
-#                                      token = "ngrams", n = 2) %>% 
-#     count(bigram, sort = T)
-# head(text_bi, 20)
-```
-
-```{r}
-# text_bi %>% 
-#     separate(bigram, c("word1", "word2"), sep = " ") %>% 
-#     filter(!word1 %in% stop_words$word) %>%
-#     filter(!word2 %in% stop_words$word) %>% 
-#     head(20)
-```
-
-# LDA
-
-```{r}
-# papers <- papers %>% 
-#     rename(document = text) %>% 
-#     group_by(title) %>% 
-#     nest() %>% 
-#     mutate(tokens = map(data, function(x) unnest_tokens(x, output = word, input = document)))
-# head(papers)
-```
 
 ```{r}
 abstract_word_counts <- unnest_tokens(select(papers, title, abstract),
@@ -107,15 +43,16 @@ abstract_topics
 ```
 
 ```{r}
-abstract_topics %>% 
+main_words <- abstract_topics %>% 
     group_by(topic) %>% 
-    top_n(n = 13, wt = beta) %>% 
+    top_n(n = 10, wt = beta) %>% 
     ungroup() %>% 
     arrange(topic, -beta) %>% 
     group_by(topic) %>% 
     mutate(rank = str_c("word_", row_number())) %>%
     select(topic, rank, term) %>%
     pivot_wider(names_from = rank, values_from = term)
+main_words
 ```
 
 ```{r}
@@ -131,6 +68,66 @@ abstract_documents %>%
     mutate(main = gamma > 0.5) %>% 
     group_by(topic) %>% 
     summarize(main = sum(main)) %>% 
-    arrange(-main)
+    arrange(-main) %>% 
+  left_join(main_words)
+```
+
+
+# Full text
+
+
+```{r eval=FALSE, include=FALSE}
+text_word_counts <- unnest_tokens(select(papers, title, text),
+                                      word, text) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(title, word)
+head(text_word_counts)
+```
+
+```{r eval=FALSE, include=FALSE}
+text_dtm <- text_word_counts %>% 
+    cast_dtm(title, word, n)
+text_dtm
+```
+
+```{r eval=FALSE, include=FALSE}
+text_lda <- LDA(text_dtm, k = 10)
+text_lda
+```
+
+```{r eval=FALSE, include=FALSE}
+text_topics <- tidy(text_lda, matrix = "beta")
+text_topics
+```
+
+```{r eval=FALSE, include=FALSE}
+main_words <- text_topics %>% 
+    group_by(topic) %>% 
+    top_n(n = 10, wt = beta) %>% 
+    ungroup() %>% 
+    arrange(topic, -beta) %>% 
+    group_by(topic) %>% 
+    mutate(rank = str_c("word_", row_number())) %>%
+    select(topic, rank, term) %>%
+    pivot_wider(names_from = rank, values_from = term)
+main_words
+```
+
+```{r eval=FALSE, include=FALSE}
+text_documents <- tidy(text_lda, matrix = "gamma")
+text_documents
+```
+
+```{r eval=FALSE, include=FALSE}
+text_documents %>% filter(topic == 3 & gamma > 0.5) %>% arrange(-gamma)
+```
+
+```{r eval=FALSE, include=FALSE}
+text_documents %>% 
+    mutate(main = gamma > 0.5) %>% 
+    group_by(topic) %>% 
+    summarize(main = sum(main)) %>% 
+    arrange(-main) %>% 
+  left_join(main_words)
 ```
 

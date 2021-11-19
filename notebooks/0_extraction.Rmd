@@ -1,9 +1,6 @@
 ---
 title: "Extraction"
-output: 
-  html_document:
-    df_print: kable
-    paged.print: false
+output: html_notebook
 ---
 
 ```{r setup}

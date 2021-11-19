@@ -181,7 +181,7 @@ final_citations$context[13]
 ```
 
 ```{r}
-final_references$title[4]
+final_references$title[16]
 ```
 
 ```{r}
@@ -189,5 +189,5 @@ final_papers$title %>% head()
 ```
 
 ```{r}
-filter(final_citations, global_reference_id == 19)$context %>% head(50)
+filter(final_citations, global_reference_id == 1)$context %>% head(50)
 ```
