@@ -2,3 +2,7 @@ data.zip
 data/
 *Rproj*
 .Rproj.user
+*ipynb_checkpoints*
+*Rhistory*
+data_raw
+emb
