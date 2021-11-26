@@ -2,7 +2,7 @@ import requests
 import zipfile
 
 print("Downloading data.zip...")
-url = "https://www.dropbox.com/s/pf5r2bkobw65fwh/data.zip?dl=1"
+url = "https://web.cs.dal.ca/~juanr/downloads/data.zip"
 data = requests.get(url)
 
 with open("data.zip", "wb") as file:
