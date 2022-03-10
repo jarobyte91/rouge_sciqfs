@@ -5,7 +5,7 @@ from tqdm import tqdm
 import zipfile
 from urllib.request import urlopen
 
-url = "https://web.cs.dal.ca/~juanr/downloads/malnis_dataset.zip"
+url = "https://web.cs.dal.ca/~juanr/resources/downloads/malnis_dataset.zip"
 block_size = 1024 #1 Kibibyte
 
 filename = url.split("/")[-1]
