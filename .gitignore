@@ -6,3 +6,7 @@ data/
 *Rhistory*
 data_raw
 emb
+*sbert/
+*.pyc
+*__pycache__*
+*.egg*
