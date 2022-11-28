@@ -10,3 +10,6 @@ emb
 *.pyc
 *__pycache__*
 *.egg*
+*.pkl
+*.out
+*cc_*.sh*

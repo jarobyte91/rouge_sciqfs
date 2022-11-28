@@ -6,9 +6,9 @@ from tqdm.auto import tqdm
 
 rouge = Rouge()
 
-def show(x):
+def show(x, n = 5):
     print(x.shape)
-    return x.head()
+    return x.head(n = n)
 
 # def find_summary(query, document):
 #     sentences = sent_tokenize(document)
@@ -34,20 +34,29 @@ def show(x):
 #     return sentences
 
 
-def find_summary(query, document):
+def find_summary(
+    query, 
+    document, 
+    starting_summary = None,
+    metric = "rouge-1", 
+    component = "f"
+):
     sentences = sent_tokenize(document)
     summary = []
+    if starting_summary:
+        summary.append(starting_summary)
     current_score = 0.0
     while len(sentences) > 0:
 #         print("sentences", len(sentences))
-        scores = [
+        raw_scores = [
             rouge.get_scores(
 #             compute_score(
                 hyps = " ".join(summary + [c]), 
                 refs = query
-            )[0]["rouge-1"]["f"]
+            )[0]
             for c in sentences
         ]
+        scores = [d[metric][component] for d in raw_scores]
         max_score = max(scores)
         idx = np.argmax(scores)
 #         print("sesentences
@@ -68,7 +77,7 @@ def find_summary(query, document):
             break
 #         print()
 #     print("max score:", max_score)
-    return summary, max_score
+    return summary, max_score, raw_scores[idx]
 
 def compute_score(hypothesis, reference):
     return random.uniform(0, 1)
