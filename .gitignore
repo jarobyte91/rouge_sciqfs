@@ -13,3 +13,4 @@ emb
 *.pkl
 *.out
 *cc_*.sh*
+*.npy
