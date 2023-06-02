@@ -12,14 +12,16 @@ Tested on Python 3.8.10
 
     git clone https://github.com/jarobyte91/malnis_data
     cd malnis_data
-    pip install -r requirements
     
 To download the dataset
 
+    pip install requests
+    pip install tqdm
     python download_data.py
     
-To install the library and models
+To install the utilities and models
 
+    pip install -r requirements
     pip install .
 
 ## Contribute
