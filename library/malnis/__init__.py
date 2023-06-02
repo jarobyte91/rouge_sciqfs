@@ -3,6 +3,7 @@ import random
 import numpy as np
 from rouge import Rouge
 from tqdm.auto import tqdm
+from . import models
 
 rouge = Rouge()
 
@@ -79,5 +80,5 @@ def find_summary(
 #     print("max score:", max_score)
     return summary, max_score, raw_scores[idx]
 
-def compute_score(hypothesis, reference):
-    return random.uniform(0, 1)
+# def compute_score(hypothesis, reference):
+#     return random.uniform(0, 1)
