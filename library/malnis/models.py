@@ -30,8 +30,6 @@ class Model(nn.Module):
             lr = learning_rate,
             weight_decay = weight_decay
         )
-        # bar = tqdm(total = epochs * len(loader))
-#         plot = []
         train_log = []
         for i in range(1, epochs + 1):
             losses = []
@@ -42,8 +40,6 @@ class Model(nn.Module):
                 loss.backward()
                 optimizer.step()
                 losses.append(loss.item())
-#                 plot.append(loss.item())
-        #         bar.update(1)
             epoch_loss = sum(losses) / len(losses)
             train_log.append(epoch_loss)
             print(f"  epoch {i}, loss {epoch_loss:.6f}")
