@@ -1,16 +1,12 @@
 # MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction
 
-This is the source code for the paper [MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction](https://web.cs.dal.ca/~juanr/resources/malnis_data.pdf) by Ramirez-Orta et al. (2023)
-
-## Usage
-
-## Features
+This is the resource repository for the paper MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction.
 
 ## Installation
 
-Tested on Python 3.8.10
-
-    git clone https://github.com/jarobyte91/malnis_data
+Tested on Python 3.8.10. 
+After decompressing the zip file:
+    
     cd malnis_data
     
 To download the dataset
@@ -24,13 +20,10 @@ To install the utilities and models
     pip install -r requirements
     pip install .
 
-## Contribute
+## Features
 
-Feel free to use the Issue Tracker and to send Pull Requests.
 
-## Support
 
-Feel free to contact me at jarobyte91@gmail.com
 
 ## License
 
