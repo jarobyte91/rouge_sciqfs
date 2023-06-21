@@ -6,7 +6,7 @@ data/
 *Rhistory*
 data_raw
 emb
-*sbert/
+# *sbert/
 *.pyc
 *__pycache__*
 *.egg*
@@ -14,3 +14,13 @@ emb
 *.out
 *cc_*.sh*
 *.npy
+
+connection.sh
+connection.sh.no_gpu
+
+notebooks/quotes/
+notebooks/sbert/
+notebooks/specter/
+scripts/embeddings/sbert/sbert/
+scripts/embeddings/specter/specter/
+
