@@ -29,7 +29,3 @@ To install the utilities and models
 
     pip install -r requirements
     pip install .
-
-## License
-
-The project is licensed under the MIT License.
