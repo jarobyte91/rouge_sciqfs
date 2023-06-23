@@ -40,8 +40,6 @@ jupyter_core==5.0.0
 jupyterlab-widgets==3.0.3
 jupyterlab_pygments==0.2.2
 kiwisolver==1.4.4
--e git+ssh://git@github.com/jarobyte91/malnis_dataset.git@ffa8da5faafd7dbf3c36ac3de845cc0a743796b9#egg=malnis
--e git+ssh://git@github.com/jarobyte91/malnis_dataset.git@ffa8da5faafd7dbf3c36ac3de845cc0a743796b9#egg=malnis_dataset
 MarkupSafe==2.1.1
 matplotlib==3.5.3
 matplotlib-inline==0.1.6
