@@ -1,6 +1,6 @@
 # MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction
 
-This is the resource repository for the paper MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction.
+This is the resource repository for the paper *MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction*.
 
 ## Abstract
 
@@ -21,8 +21,7 @@ After decompressing the zip file:
     
 To download the dataset
 
-    pip install requests
-    pip install tqdm
+    pip install requests tqdm
     python download_data.py
     
 To install the utilities and models
