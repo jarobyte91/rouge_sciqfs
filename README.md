@@ -1,5 +1,3 @@
-# HELLO FAEZEH
-
 # MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction
 
 This is the resource repository for the paper *MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction*.
