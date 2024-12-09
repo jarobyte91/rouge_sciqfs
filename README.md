@@ -1,6 +1,6 @@
-# MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction
+# ROUGE-SciQFS: A ROUGE-based Method to Automatically Create Datasets for Scientific Query-Focused Summarization
 
-This is the resource repository for the paper *MALNIS-DATA: Automatically Building Datasets for Scientific Query-Focused Summarization and Citation Prediction*.
+This is the resource repository for the paper *ROUGE-SciQFS: A ROUGE-based Method to Automatically Create Datasets for Scientific Query-Focused Summarization* by Ramirez-Orta et al.
 
 ## Abstract
 
