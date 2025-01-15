@@ -17,7 +17,7 @@ So far, the tasks of Query-Focused Extractive Summarization and Citation Predict
 Tested on Python 3.8.10. 
 After decompressing the zip file:
     
-    cd malnis_data
+    cd rouge_sciqfs
     
 To download the dataset
 
